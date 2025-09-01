@@ -24,13 +24,25 @@ export const InvoiceTermsPdf: React.FC<InvoiceTerms> = ({
       <View>
         <Text style={pdfTypography.title}>Issued</Text>
         <Text style={pdfTypography.subTitle}>
-          {issueDate ? format(issueDate, "do MMM yyyy") : ""}
+          {issueDate ? (() => {
+            try {
+              return format(new Date(issueDate), "do MMM yyyy");
+            } catch (e) {
+              return "";
+            }
+          })() : ""}
         </Text>
       </View>
       <View>
         <Text style={pdfTypography.title}>Due Date</Text>
         <Text style={pdfTypography.subTitle}>
-          {dueDate ? format(dueDate, "do MMM yyyy") : ""}
+          {dueDate ? (() => {
+            try {
+              return format(new Date(dueDate), "do MMM yyyy");
+            } catch (e) {
+              return "";
+            }
+          })() : ""}
         </Text>
       </View>
     </View>

@@ -141,7 +141,7 @@ export const PaymentDetailsPdf: React.FC<PaymentDetailsPdfProps> = ({
                 width: 30,
                 height: 30,
                 flexShrink: 0,
-                borderRadius: "100%",
+                borderRadius: 15,
                 objectFit: "cover",
               }}
             />

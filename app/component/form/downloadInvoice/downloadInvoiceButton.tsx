@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Document, Font, Page } from "@react-pdf/renderer";
+import { Document, Font, Page, Text } from "@react-pdf/renderer";
 import { CheckCircle2, Download, LoaderIcon, SplineIcon } from "lucide-react";
 import { PdfDetails } from "../pdfDetails";
 import { useData } from "@/app/hooks/useData";
@@ -11,6 +11,46 @@ import { pdf } from "@react-pdf/renderer";
 import { svgToDataUri } from "@/lib/svgToDataUri";
 import { useEffect, useState } from "react";
 import { currencyList } from "@/lib/currency";
+
+// Register fonts at module level
+Font.register({
+  family: "Geist",
+  fonts: [
+    {
+      src: "/font/Geist-Thin.ttf",
+      fontWeight: "thin",
+    },
+    {
+      src: "/font/Geist-UltraLight.ttf",
+      fontWeight: "ultralight",
+    },
+    {
+      src: "/font/Geist-Light.ttf",
+      fontWeight: "light",
+    },
+    {
+      src: "/font/Geist-Regular.ttf",
+      fontWeight: "normal",
+    },
+    {
+      src: "/font/Geist-Medium.ttf",
+      fontWeight: "medium",
+    },
+    {
+      src: "/font/Geist-SemiBold.ttf",
+      fontWeight: "semibold",
+    },
+    {
+      src: "/font/Geist-Bold.ttf",
+      fontWeight: "bold",
+    },
+    {
+      src: "/font/Geist-UltraBlack.ttf",
+      fontWeight: "ultrabold",
+    },
+  ],
+});
+
 export const DownloadInvoiceButton = () => {
   const [status, setStatus] = useState<
     "downloaded" | "downloading" | "not-downloaded"
@@ -43,6 +83,14 @@ export const DownloadInvoiceButton = () => {
           onClick={async () => {
             try {
               setStatus("downloading");
+              console.log("Invoice data:", {
+                companyDetails,
+                invoiceDetails,
+                invoiceTerms,
+                paymentDetails,
+                yourDetails,
+              });
+              
               const currencyDetails = currencyList.find(
                 (currencyDetail) =>
                   currencyDetail.value.toLowerCase() ===
@@ -61,7 +109,11 @@ export const DownloadInvoiceButton = () => {
               );
               const svgFlag = await data.text();
               const countryImageUrl = await svgToDataUri(svgFlag);
+              console.log("Country image URL:", countryImageUrl);
+              
               if (countryImageUrl) {
+                console.log("Creating PDF document...");
+                
                 const blob = await pdf(
                   <Document>
                     <Page size="A4" style={pdfContainers.page}>
@@ -76,13 +128,15 @@ export const DownloadInvoiceButton = () => {
                     </Page>
                   </Document>
                 ).toBlob();
+                console.log("PDF blob created:", blob);
                 saveAs(blob, "invoice.pdf");
                 setStatus("downloaded");
               } else {
+                console.error("Failed to get country image URL");
                 setStatus("not-downloaded");
               }
             } catch (e) {
-              console.error(e);
+              console.error("Download error:", e);
               setStatus("not-downloaded");
             }
           }}
@@ -111,40 +165,4 @@ export const DownloadInvoiceButton = () => {
   );
 };
 
-Font.register({
-  family: "Geist",
-  fonts: [
-    {
-      src: "/font/Geist-Thin.ttf",
-      fontWeight: "thin",
-    },
-    {
-      src: "/font/Geist-Ultralight.ttf",
-      fontWeight: "ultralight",
-    },
-    {
-      src: "/font/Geist-Light.ttf",
-      fontWeight: "light",
-    },
-    {
-      src: "/font/Geist-Regular.ttf",
-      fontWeight: "normal",
-    },
-    {
-      src: "/font/Geist-Medium.ttf",
-      fontWeight: "medium",
-    },
-    {
-      src: "/font/Geist-SemiBold.ttf",
-      fontWeight: "semibold",
-    },
-    {
-      src: "/font/Geist-Bold.ttf",
-      fontWeight: "bold",
-    },
-    {
-      src: "/font/Geist-UltraBlack.ttf",
-      fontWeight: "ultrabold",
-    },
-  ],
-});
+

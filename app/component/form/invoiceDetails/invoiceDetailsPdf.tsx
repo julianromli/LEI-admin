@@ -44,7 +44,7 @@ export const InvoiceDetailsPdf: React.FC<InvoiceItemDetails> = ({
           </View>
         </View>
       </View>
-      {items.map(({ itemDescription, amount, qty }, index) => {
+      {(items || []).map(({ itemDescription, amount, qty }, index) => {
         const containerStyle = {
           marginHorizontal: 40,
           paddingVertical: 14,
@@ -195,7 +195,7 @@ export const InvoiceDetailsPdf: React.FC<InvoiceItemDetails> = ({
 };
 
 const calculateTotalAmount = (items: Item[]): number =>
-  items.reduce((total, item) => {
+  (items || []).reduce((total, item) => {
     const quantity = item.qty ? +item.qty : 1;
     const amount = item.amount ? +item.amount : 0;
     return total + quantity * amount;
